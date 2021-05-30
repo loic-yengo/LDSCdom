@@ -1,0 +1,11 @@
+To run the program users need to
+1) unzip the ldscore files (current version)
+2) run a command like this
+	./ldscdom --sumstat sumstats.txt --ld-score ukb.ldscore --out test
+
+Output
+Results will be displayed in the standard output (stdout).
+The [--out] option does not generate any output files for now but users still need to specify it (sorry will improve later).
+
+
+
