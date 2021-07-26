@@ -14,22 +14,6 @@ using namespace std;
 
 // Main funtion used on cov_files.txt with a sequential access
 int main(int argc, char *argv[]){
-  cout << "#################################################################\n";
-  cout << "# ldscdom 0.01 Beta                                             #\n";
-  cout << "# LD score regression estimation of Inbreeding Depression       #\n";
-  cout << "# Author: Loic Yengo                                            #\n";
-  cout << "# License (TBD)                                                 #\n";
-  cout << "#################################################################\n";
-
-  clock_t tic = clock();
-  time_t t = time(0);   // get time now
-  struct tm * now = localtime( & t );
-  cout <<"# Analysis starts: ";
-  cout << (now->tm_year + 1900) << '-' 
-       << (now->tm_mon + 1) << '-'
-       <<  now->tm_mday << " at "
-       <<  now->tm_hour <<":"<<now->tm_min<<":"<<now->tm_sec
-       << endl;
   if(argc==1){
     cerr<<"# Arguments must be specified. Type --help for more details."<<endl;
     exit(1);
@@ -87,22 +71,72 @@ int main(int argc, char *argv[]){
     cerr<<"\tA LD score file must be specified. Use [--ld-score] or check help [--help]."<<endl;
     exit(1);
   }
-
-  LDSC ldscores   = LDSC(ldscfile,verbose);
-  UniSumstat gwas = UniSumstat(sumstatfile,ldscores,verbose);
-  gwas.fitLDSCdom(verbose);
+  
+  if(verbose){
+    cout << "#################################################################\n";
+    cout << "# ldscdom 0.1 Beta                                              #\n";
+    cout << "# LD score regression estimation of Inbreeding Depression       #\n";
+    cout << "# Author: Loic Yengo                                            #\n";
+    cout << "# License (TBD)                                                 #\n";
+    cout << "#################################################################\n";
+  }  
+  clock_t tic = clock();
+  time_t t = time(0);   // get time now
+  struct tm * now = localtime( & t );
+  
+  if(verbose){
+    cout <<"# Analysis starts: ";
+    cout << (now->tm_year + 1900) << '-' 
+         << (now->tm_mon + 1) << '-'
+         <<  now->tm_mday << " at "
+         <<  now->tm_hour <<":"<<now->tm_min<<":"<<now->tm_sec
+         <<  endl;
+  }
+  
+  string logFile = prefix+".ldscdom.log";
+  ofstream fileLog(logFile.c_str());
+  fileLog << "#################################################################\n";
+  fileLog << "# ldscdom 0.1 Beta                                              #\n";
+  fileLog << "# LD score regression estimation of Inbreeding Depression       #\n";
+  fileLog << "# Author: Loic Yengo                                            #\n";
+  fileLog << "# License (TBD)                                                 #\n";
+  fileLog << "#################################################################\n";
+  fileLog <<"# Analysis starts: ";
+  fileLog << (now->tm_year + 1900) << '-' 
+          << (now->tm_mon + 1) << '-'
+          <<  now->tm_mday << " at "
+          <<  now->tm_hour <<":"<<now->tm_min<<":"<<now->tm_sec
+          << endl;
+  
+  LDSC ldscores   = LDSC(ldscfile,verbose,fileLog);
+  UniSumstat gwas = UniSumstat(sumstatfile,ldscores,verbose,fileLog);
+  gwas.fitLDSCdom(verbose,fileLog);
 
   time_t t2 = time(0);   // get time now
   struct tm * now2 = localtime( & t2 );
-  cout <<"# Analysis ends: ";
-  cout << (now2->tm_year + 1900) << '-' 
-       << (now2->tm_mon + 1) << '-'
-       <<  now2->tm_mday << " at "
-       <<  now2->tm_hour <<":"<<now2->tm_min<<":"<<now2->tm_sec
-       << endl;
+  if(verbose){
+    cout <<"# Analysis ends: ";
+    cout << (now2->tm_year + 1900) << '-' 
+         << (now2->tm_mon + 1) << '-'
+         <<  now2->tm_mday << " at "
+         <<  now2->tm_hour <<":"<<now2->tm_min<<":"<<now2->tm_sec
+         << endl;
+  }
   clock_t toc = clock();
   
-  printf("# Time elapsed: %f seconds\n", (float)(toc - tic) / CLOCKS_PER_SEC);
+  float timeElapsed = (float)(toc - tic) / CLOCKS_PER_SEC;
+  if(verbose){
+    printf("# Time elapsed: %f seconds\n", timeElapsed);
+  }
+  
+  fileLog <<"# Analysis ends: ";
+  fileLog << (now2->tm_year + 1900) << '-' 
+          << (now2->tm_mon + 1) << '-'
+          <<  now2->tm_mday << " at "
+          <<  now2->tm_hour <<":"<<now2->tm_min<<":"<<now2->tm_sec
+          << endl;
+  fileLog<<"# Time elapsed: "<<timeElapsed<<" seconds\n";
+  fileLog.close();
   return EXIT_SUCCESS;
 }
 

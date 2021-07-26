@@ -29,9 +29,9 @@ public:
   double i_ID;
   double c_ID; // slope from constrained regression
 
-  UniSumstat(string sumstatfile, LDSC ldscores, bool verbose);
+  UniSumstat(string sumstatfile, LDSC ldscores, bool verbose, ofstream &fileLog);
   ~UniSumstat(){};
   
-  void fitLDSCdom(bool verbose);
+  void fitLDSCdom(bool verbose, ofstream &fileLog);
 };
 #endif

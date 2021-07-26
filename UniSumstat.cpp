@@ -1,8 +1,8 @@
 #include "UniSumstat.hpp"
 
-UniSumstat::UniSumstat(string sumstatfile, LDSC ldscores, bool verbose){
+UniSumstat::UniSumstat(string sumstatfile, LDSC ldscores, bool verbose, ofstream &fileLog){
   int j;
-  int Mi = 0; // starts at 0 becasue there is a title line
+  int Mi = 0; // starts at 0 because there is a title line
   string line = "";
   string tok  = ""; 
   ifstream tmpStream;
@@ -16,6 +16,7 @@ UniSumstat::UniSumstat(string sumstatfile, LDSC ldscores, bool verbose){
   if(verbose){
     cout<<"# Found "<<Mi<<" SNPs in GWAS summary statistics file: "<<sumstatfile<<endl;
   }
+  fileLog<<"# Found "<<Mi<<" SNPs in GWAS summary statistics file: "<<sumstatfile<<endl;
   
   tmpStream.open(sumstatfile.c_str());
   int nColScoreFile = 0;
@@ -29,6 +30,7 @@ UniSumstat::UniSumstat(string sumstatfile, LDSC ldscores, bool verbose){
   if(verbose){
     cout<<"# Found "<<nColScoreFile<<" columns in summary statistics file.\n";
   }
+  fileLog<<"# Found "<<nColScoreFile<<" columns in summary statistics file.\n";
   
   // Format is SNP A1 A2 A1FREQ BETA SE P N
   string z, n;
@@ -69,7 +71,10 @@ UniSumstat::UniSumstat(string sumstatfile, LDSC ldscores, bool verbose){
   this->block.resize(this->M);
   this->SNP = new string[this->M];
   
-  cout<<"# "<<this->M<<" SNPs included in analysis.\n";
+  if(verbose){
+    cout<<"# "<<this->M<<" SNPs included in analysis.\n";
+  }
+  fileLog<<"# "<<this->M<<" SNPs included in analysis.\n";
   
   int i = -1;
   this->NumBlock = ldscores.NumBlock;
@@ -95,7 +100,7 @@ UniSumstat::UniSumstat(string sumstatfile, LDSC ldscores, bool verbose){
   // }
 };
 
-void UniSumstat::fitLDSCdom(bool verbose){
+void UniSumstat::fitLDSCdom(bool verbose, ofstream &fileLog){
   
   int B = this->NumBlock + 1;
   VectorXd Sw   = VectorXd::Zero(B);
@@ -169,9 +174,17 @@ void UniSumstat::fitLDSCdom(bool verbose){
   
   if(verbose){
     cout<<"# Effective number of blocks : "<<Beff<<".\n";
-    cout<<"# LDSC weighted Estimator : Intercept = "<<this->i_ID<<" ("<<se_i<<") - b = "<<this->b_ID<<" ("<<se_b<<")\n";
+    //cout<<"# LDSC weighted Estimator : Intercept = "<<this->i_ID<<" ("<<se_i<<") - b = "<<this->b_ID<<" ("<<se_b<<")\n";
+    cout<<"# Parameters\tEstimate\tSE\n";
+    cout<<"# Intercept\t"<<this->i_ID<<"\t"<<se_i<<"\n";
+    cout<<"# Slope (b)\t"<<this->b_ID<<"\t"<<se_b<<"\n";
     //cout<<"# Intercept-constrained   : b = "<<this->c_ID<<" ("<<se_b<<")\n";
   }
+  fileLog<<"# Effective number of blocks : "<<Beff<<".\n";
+  fileLog<<"Parameters\tEstimate\tSE\n";
+  fileLog<<"Intercept\t"<<this->i_ID<<"\t"<<se_i<<"\n";
+  fileLog<<"Slope (b)\t"<<this->b_ID<<"\t"<<se_b<<"\n";
+  //fileLog<<"# LDSC weighted Estimator : Intercept = "<<this->i_ID<<" ("<<se_i<<") - b = "<<this->b_ID<<" ("<<se_b<<")\n";
 };
 
 
