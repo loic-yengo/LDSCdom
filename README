@@ -1,11 +1,21 @@
+This programs estimates inbreeding depression (directional dominance)
+from a additive-dominance GWAS summary statistics, using a LD score regression framework.
+The theory underlying this method is described in Yengo et al. (2021):
+Genomic partitioning of inbreeding depression in humans, AJHG 2021
+doi: 10.1016/j.ajhg.2021.06.005
+URL: https://www.sciencedirect.com/science/article/pii/S0002929721002299?via%3Dihub
+PMID: 34214457
+
+
 To run the program users need to
 
 (1) unzip the ldscore files (current version)
 
 (2) run a command like this
+
 	./ldscdom --sumstat sumstats.txt --ld-score ukb.ldscore --out myOUTPUT
 
-(3) Help ./ldscdom --help
+(3) CHeck the help by typing ./ldscdom --help
 
 Output:
 	Results will be displayed in the standard output (stdout) and log file.
