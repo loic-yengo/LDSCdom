@@ -1,4 +1,4 @@
-This programs estimates inbreeding depression (directional dominance)
+This programs (v.0.1) estimates inbreeding depression (directional dominance)
 from a additive-dominance GWAS summary statistics, using a LD score regression framework.
 The theory underlying this method is described in Yengo et al. (2021):
 Genomic partitioning of inbreeding depression in humans, AJHG 2021
